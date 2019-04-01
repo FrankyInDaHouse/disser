@@ -8,7 +8,7 @@ fid = fopen('csv_table.csv','w');
 fprintf(fid,'%s\n',textHeader);
 
 % Parameters of code
-length = 7;
+length = 3;
 amount_of_seq = 2^length;
 cw_cnt = 0;
 ncw_cnt = 0;
@@ -16,7 +16,6 @@ ncw_cnt = 0;
 for iterator = 1 : amount_of_seq
     value = iterator - 1;
     data_vector = fliplr( de2bi(value, length) );
-    data_vector = num2str(data_vector);
 
     if (mod(sum(data_vector),2) == 0)
         is_cw = 1;
@@ -26,5 +25,7 @@ for iterator = 1 : amount_of_seq
         ncw_cnt = ncw_cnt + 1;
     end
     
+    data_vector = num2str(data_vector);
     fprintf(fid,'%s, %d\n', data_vector, is_cw);
 end
+fclose(fid);

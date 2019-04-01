@@ -3,7 +3,7 @@ if exist('csv_table.csv', 'file')
     fclose('all');
     delete('csv_table.csv');
 end
-textHeader = "codeword, codeword_dec, corr_result";
+textHeader = "received_seq, is_cw";
 fid = fopen('csv_table.csv','w');
 fprintf(fid,'%s\n',textHeader);
 
@@ -47,9 +47,8 @@ disp('Fill codewords and errors')
 codewords{amount_of_codewords} = zeros();
 for iterator = 1 : amount_of_codewords
     value = iterator - 1;
-    data_vector = fliplr( de2bi(value, k) )
-    mod(data_vector * G, 2)
-    codewords{iterator} = mod(data_vector * G, 2)
+    data_vector = fliplr( de2bi(value, k) );
+    codewords{iterator} = mod(data_vector * G, 2);
 end
 errors{amount_of_errors} = zeros();
 errors{1} = zeros(1, n);
@@ -71,25 +70,23 @@ end
 
 disp('CSV table creation')
 %%%%%%%%%%%%%%%%%CSV TABLE CREATION
+csv_table{2^n, 2} = zeros();
 % 1st column (all possible variants)
-csv_table{2^n, 3} = zeros();
 csv_table(:, 1) = standart_table(:);
-% 2nd column (dec representation)
+% 2nd column
 for row = 1 : 2^n
     fprintf('writing row = %d\n', row);
-    csv_table{row, 2} = bi2de( fliplr(cell2mat(csv_table(row, 1))) );
-    
-    [codeword_row, error_col] = find( cellfun( @(x) isequal(x, csv_table{row, 1}), standart_table ) );
-    
-    csv_table{row, 3} = bi2de( cell2mat(standart_table(codeword_row, 1)) );
+    if (row < amount_of_codewords + 1)
+        csv_table{row, 2} = 1;
+    else
+        csv_table{row, 2} = 0;
+    end
     
     %conversion to string (1st column)
     csv_table{row, 1} = num2str(cell2mat(csv_table(row, 1)));
-    csv_table{row, 1} = csv_table{row, 1}(csv_table{row, 1} ~= ' ');
+    %csv_table{row, 1} = csv_table{row, 1}(csv_table{row, 1} ~= ' ');
     
-    fprintf(fid,'%s, %d, %d\n', csv_table{row, 1},...
-                                csv_table{row, 2},...
-                                csv_table{row, 3});
+    fprintf(fid,'%s, %d\n', csv_table{row, 1}, csv_table{row, 2});
 end
 fid = fclose(fid);
 %%%%%%%%%%%%%%%%%CSV TABLE CREATION
