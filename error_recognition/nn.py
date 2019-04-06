@@ -40,17 +40,24 @@ for i in range(amount_of_received_seq):
 SAVE_MODEL = 1
 LOAD_MODEL = 0
 PER_LAYER_WEIGHTS = 0
-PLOTS_ENABLED = 0
+PLOTS_ENABLED = 1
 DETAILED_REPORT_ENABLED = 1
-PREDICTION_ENABLED = 0
+PREDICTION_ENABLED = 1
+EARLY_STOPPER_ENABLED = 1
 ################################
-NEURONS_PER_LAYER = 14
-AMOUNT_OF_TRAINING_EPOCHS = 5000
-PART_OF_FULL_DATA_USED_TO_VAL = 0.2  # <- will be used as validation. (1-x) used for training
-RETRIES_MAX_VALUE = 10
-# CONFIGURATION PART
+NEURONS_PER_LAYER = 7
+AMOUNT_OF_HIDDEN_LAYERS = 1
+PART_TO_DROPOUT = 0.0
 
-print("Total amount of words: ", amount_of_received_seq)
+AMOUNT_OF_TRAINING_EPOCHS = 5000
+PART_OF_FULL_DATA_USED_TO_VAL = 0.125  # <- will be used as validation. (1-x) used for training
+RETRIES_MAX_VALUE = 15
+# CONFIGURATION PART
+if AMOUNT_OF_HIDDEN_LAYERS > 2:
+	print('Please recheck amount of hidden layers!!! You use more than 2 layers.')
+	exit(-1)
+
+print('Total amount of words: ', amount_of_received_seq)
 training_size = math.floor(amount_of_received_seq * (1-PART_OF_FULL_DATA_USED_TO_VAL))
 validation_size = amount_of_received_seq - training_size
 
@@ -67,14 +74,19 @@ for i in range(RETRIES_MAX_VALUE):
 	resulting_table[i, 0] = iteration
 	################################################################
 	model = keras.Sequential()
-	# 1 hidden layer
-	model.add(keras.layers.Dense(NEURONS_PER_LAYER, input_dim=received_seq_len_without_spaces, kernel_initializer='random_normal', activation='relu'))
+	# INPUT LAYER
+	model.add(keras.layers.Dense(received_seq_len_without_spaces, input_dim=received_seq_len_without_spaces, kernel_initializer='random_normal', activation='relu', name='input_layer'))
 
-	# 2 hidden layer
-	model.add(keras.layers.Dense(NEURONS_PER_LAYER, kernel_initializer='random_normal', activation='relu'))
+	if AMOUNT_OF_HIDDEN_LAYERS >= 1:
+		# model.add(keras.layers.Dropout(PART_TO_DROPOUT))
+		model.add(keras.layers.Dense(NEURONS_PER_LAYER, kernel_initializer='random_normal', activation='relu', name='1st_hidden_layer'))
 
-	# Output layer
-	model.add(keras.layers.Dense(1, kernel_initializer='random_normal', activation='sigmoid'))
+	if AMOUNT_OF_HIDDEN_LAYERS == 2:
+		# model.add(keras.layers.Dropout(PART_TO_DROPOUT))
+		model.add(keras.layers.Dense(NEURONS_PER_LAYER, kernel_initializer='random_normal', activation='relu', name='2nd_hidden_layer'))
+
+	# OUTPUT LAYER
+	model.add(keras.layers.Dense(1, kernel_initializer='random_normal', activation='sigmoid', name='output_layer'))
 	################################################################
 	model.summary()
 	plot_model(model, to_file='models/model.jpg', show_shapes='True', show_layer_names='True')
@@ -83,13 +95,23 @@ for i in range(RETRIES_MAX_VALUE):
 		optimizer='rmsprop',  		 # rmsprop is the best for binary classification
 		metrics=['accuracy']
 	)
+
+	early_stopper = keras.callbacks.EarlyStopping(
+		monitor='val_acc',
+		patience=AMOUNT_OF_TRAINING_EPOCHS / 2,
+		verbose=DETAILED_REPORT_ENABLED,
+		mode='auto',
+		restore_best_weights=True)
+
 	start = time.time()
 	history = model.fit(
 		x_train, y_train,
 		epochs=AMOUNT_OF_TRAINING_EPOCHS,
 		validation_data=(x_validation, y_validation),
+		callbacks=[early_stopper],
 		verbose=DETAILED_REPORT_ENABLED
 	)
+
 	profiling = time.time() - start
 	resulting_table[i, 4] = profiling
 	train_loss, train_acc = model.evaluate(
@@ -113,8 +135,7 @@ for i in range(RETRIES_MAX_VALUE):
 	)
 	resulting_table[i, 3] = total_acc * 100
 	print('Total results: \n   loss = ', total_loss, '\n   accuracy = ', total_acc, '\niteration = ', iteration, '\n')
-
-	if val_acc > 0.9:
+	if (train_acc >= 0.90) and (val_acc >= 0.90) and EARLY_STOPPER_ENABLED:
 		break
 #
 #
