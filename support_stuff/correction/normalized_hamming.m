@@ -3,12 +3,11 @@ if exist('csv_table.csv', 'file')
     fclose('all');
     delete('csv_table.csv');
 end
-textHeader = "codeword, codeword_dec, corr_result";
+textHeader = "received_seq, corr_result";
 fid = fopen('csv_table.csv','w');
 fprintf(fid,'%s\n',textHeader);
 
 % Parameters of code
-%code_params = [3 1]; % Repetition code length = 3
 code_params = [7 4]; % Hamming code (7,4)
 %code_params = [15 11]; % Hamming code (15,11)
 
@@ -21,9 +20,6 @@ if ((n == 7) && (k == 4)) % frow wiki
          0 1 0 0 1 1 1 ;
          0 0 1 0 1 1 0 ;
          0 0 0 1 0 1 1 ;];
-end
-if ((n == 3) && (k == 1))
-        G = [1 1 1];
 end
 if ((n == 15) && (k == 11))
         G = [ 1 0 0 0 0 0 0 0 0 0 0 1 1 0 0;
@@ -47,9 +43,8 @@ disp('Fill codewords and errors')
 codewords{amount_of_codewords} = zeros();
 for iterator = 1 : amount_of_codewords
     value = iterator - 1;
-    data_vector = fliplr( de2bi(value, k) )
-    mod(data_vector * G, 2)
-    codewords{iterator} = mod(data_vector * G, 2)
+    data_vector = fliplr( de2bi(value, k) );
+    codewords{iterator} = mod(data_vector * G, 2);
 end
 errors{amount_of_errors} = zeros();
 errors{1} = zeros(1, n);
@@ -72,24 +67,33 @@ end
 disp('CSV table creation')
 %%%%%%%%%%%%%%%%%CSV TABLE CREATION
 % 1st column (all possible variants)
-csv_table{2^n, 3} = zeros();
+csv_table{2^n, 2} = zeros();
 csv_table(:, 1) = standart_table(:);
 % 2nd column (dec representation)
 for row = 1 : 2^n
     fprintf('writing row = %d\n', row);
-    csv_table{row, 2} = bi2de( fliplr(cell2mat(csv_table(row, 1))) );
     
     [codeword_row, error_col] = find( cellfun( @(x) isequal(x, csv_table{row, 1}), standart_table ) );
     
-    csv_table{row, 3} = bi2de( cell2mat(standart_table(codeword_row, 1)) );
+    csv_table{row, 2} = cell2mat(        standart_table(codeword_row, 1)              );
+    csv_table{row, 2} = csv_table{row, 2}(1:k);
     
-    %conversion to string (1st column)
+    %conversion to strings
     csv_table{row, 1} = num2str(cell2mat(csv_table(row, 1)));
-    csv_table{row, 1} = csv_table{row, 1}(csv_table{row, 1} ~= ' ');
+    % making only one space between symbols
+    symbols = length(csv_table{row, 1}) - n + 1;
+    for i = 2:2:symbols
+        csv_table{row, 1}(i) = '';
+    end
     
-    fprintf(fid,'%s, %d, %d\n', csv_table{row, 1},...
-                                csv_table{row, 2},...
-                                csv_table{row, 3});
+    csv_table{row, 2} = num2str(cell2mat(csv_table(row, 2)));
+    % making only one space between symbols
+    symbols = length(csv_table{row, 2}) - k + 1;
+    for i = 2:2:symbols
+        csv_table{row, 2}(i) = '';
+    end
+    
+    fprintf(fid,'%s, %s\n', csv_table{row, 1}, csv_table{row, 2});
 end
 fid = fclose(fid);
 %%%%%%%%%%%%%%%%%CSV TABLE CREATION

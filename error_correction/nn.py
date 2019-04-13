@@ -3,22 +3,22 @@
 
 import sys
 if len(sys.argv) != 2:
-	print('Not enough arguments! Required path to .csv!')
-	exit()
+    print('Not enough arguments! Required path to .csv!')
+    exit()
 else:
-	csv_link = sys.argv[1]
-	# imports
-	from tensorflow import keras
-	import numpy as np
-	import pandas as pd
-	import matplotlib.pyplot as plt
-	from keras.utils.vis_utils import plot_model
-	import time
-	import math
+    csv_link = sys.argv[1]
+    # imports
+    from tensorflow import keras
+    import numpy as np
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    from keras.utils.vis_utils import plot_model
+    import time
+    import math
 
 data_type_dic = {
 	'received_seq': 'str',
-	'is_cw': 'int'
+	'corr_result': 'str'
 }
 
 # Import data
@@ -28,34 +28,34 @@ amount_of_received_seq = input_data.shape[0]
 received_seq_len = len(input_data[0][0])
 received_seq_len_without_spaces = int((received_seq_len + 1) / 2)
 
+correct_results_len = len(input_data[0][1])
+correct_results_len_without_spaces = int((correct_results_len + 1) / 2)
+
 received_seq = np.ndarray(shape=(amount_of_received_seq, received_seq_len_without_spaces), dtype=int)
-correct_results = np.ndarray(shape=(amount_of_received_seq, 1), dtype=int)
+correct_results = np.ndarray(shape=(amount_of_received_seq, correct_results_len_without_spaces), dtype=int)
 
 # Prepare data
 for i in range(amount_of_received_seq):
 	received_seq[i] = np.fromstring(input_data[:, 0][i], dtype=int, sep=' ')
-	correct_results[i] = int(input_data[:, 1][i])
+	correct_results[i] = np.fromstring(input_data[:, 1][i], dtype=int, sep=' ')
 
 # CONFIGURATION PART
 SAVE_MODEL = 1
 LOAD_MODEL = 0
 PER_LAYER_WEIGHTS = 0
-PLOTS_ENABLED = 0
+PLOTS_ENABLED = 1
 DETAILED_REPORT_ENABLED = 1
-PREDICTION_ENABLED = 0
+PREDICTION_ENABLED = 1
 EARLY_STOPPER_ENABLED = 1
 ################################
-# NEURONS_PER_LAYER = 7
 AMOUNT_OF_HIDDEN_LAYERS = 2
-PART_TO_DROPOUT = 0.0
-
-AMOUNT_OF_TRAINING_EPOCHS = 500
-PART_OF_FULL_DATA_USED_TO_VAL = 0.95  # <- will be used as validation. (1-x) used for training
+AMOUNT_OF_TRAINING_EPOCHS = 50000
+PART_OF_FULL_DATA_USED_TO_VAL = 0.875  # <- will be used as validation. (1-x) used for training
 RETRIES_MAX_VALUE = 1
 # CONFIGURATION PART
 if AMOUNT_OF_HIDDEN_LAYERS > 2:
-	print('Please recheck amount of hidden layers!!! You use more than 2 layers.')
-	exit(-1)
+    print('Please recheck amount of hidden layers!!! You use more than 2 layers.')
+    exit(-1)
 
 print('Total amount of words: ', amount_of_received_seq)
 training_size = math.floor(amount_of_received_seq * (1-PART_OF_FULL_DATA_USED_TO_VAL))
@@ -75,29 +75,40 @@ for i in range(RETRIES_MAX_VALUE):
 	################################################################
 	model = keras.Sequential()
 
+	model.add(keras.layers.GaussianNoise(0.5, input_shape=(received_seq_len_without_spaces,)))
+
+	# As recommended in [16], each hidden layer employs a
+	# ReLU activation function because it is nonlinear and at the
+	# same time very close to linear which helps during optimization.
 	if AMOUNT_OF_HIDDEN_LAYERS >= 1:
-		model.add(keras.layers.Dense(received_seq_len_without_spaces, input_dim=received_seq_len_without_spaces, kernel_initializer='random_normal', activation='relu', name='1st_hidden_layer'))
+		model.add(keras.layers.Dense(64, input_dim=received_seq_len_without_spaces, kernel_initializer='random_normal', activation='relu', name='1st_hidden_layer'))
 
 	if AMOUNT_OF_HIDDEN_LAYERS == 2:
-		model.add(keras.layers.Dense(received_seq_len_without_spaces / 2, kernel_initializer='random_normal', activation='relu', name='2nd_hidden_layer'))
+		model.add(keras.layers.Dense(64, kernel_initializer='random_normal', activation='relu', name='2nd_hidden_layer'))
 
-	if AMOUNT_OF_HIDDEN_LAYERS != 0:
-		model.add(keras.layers.Dense(1, kernel_initializer='random_normal', activation='sigmoid', name='output_layer'))
-	else:
-		model.add(keras.layers.Dense(1, input_dim=received_seq_len_without_spaces, kernel_initializer='random_normal', activation='sigmoid', name='only_one_layer'))
+	# Since the output layer represents the information bits, a
+	# sigmoid function forces the output neurons to be in between
+	# zero and one, which can be interpreted as the probability that
+	# a “1” was transmitted.
+	model.add(keras.layers.Dense(correct_results_len_without_spaces, kernel_initializer='random_normal', activation='sigmoid', name='output_layer'))
 
 	################################################################
 	model.summary()
 	plot_model(model, to_file='models/model.jpg', show_shapes='True', show_layer_names='True')
 	model.compile(
-		loss='binary_crossentropy',	 # binary_crossentropy is the best for binary classification
-		optimizer='rmsprop',  		 # rmsprop is the best for binary classification
+		# If the probability is close to the bit of the label, the loss should be incremented only slightly whereas
+		# large errors should result in a very large loss. Examples for such loss functions are the
+		# mean squared error (MSE) and the binary cross-entropy (BCE).
+		loss='binary_crossentropy',
+		# We train our NN decoder in so-called “epochs”. In each epoch, the gradient of the loss function is calculated
+		# over the entire training set X using Adam’, a method for stochastic gradient descent optimization.
+		optimizer='adam',
 		metrics=['accuracy']
 	)
 
 	early_stopper = keras.callbacks.EarlyStopping(
 		monitor='val_acc',
-		patience=AMOUNT_OF_TRAINING_EPOCHS / 2,
+		patience=AMOUNT_OF_TRAINING_EPOCHS,
 		verbose=DETAILED_REPORT_ENABLED,
 		mode='auto',
 		restore_best_weights=True)
@@ -172,19 +183,19 @@ if PER_LAYER_WEIGHTS:
 train_stat_correct = 0
 val_stat_correct = 0
 if PREDICTION_ENABLED:
-	predicts = model.predict(x_train)
+	predicts = np.round(model.predict(x_train))
 	print('\n=====\n')
 	for i in range(training_size):
-		if np.round(predicts[i]) == y_train[i]:
+		if np.array_equal(predicts[i], y_train[i]):
 			train_stat_correct = train_stat_correct + 1
 			print('For training example ', i, ' we have ', predicts[i], '. Correct is ', y_train[i], '. |CORRECT')
 		else:
 			print('For training example ', i, ' we have ', predicts[i], '. Correct is ', y_train[i], '. |BULLSHIT')
 	print('[TRAINING] Correct ', train_stat_correct, 'from', training_size, '(', train_stat_correct/training_size*100, ') percents')
 	print('\n=====\n')
-	predicts = model.predict(x_validation)
+	predicts = np.round(model.predict(x_validation))
 	for i in range(validation_size):
-		if np.round(predicts[i]) == y_validation[i]:
+		if np.array_equal(predicts[i], y_validation[i]):
 			val_stat_correct = val_stat_correct + 1
 			print('For validation example ', i, ' we have ', predicts[i], '. Correct is ', y_validation[i], '. |CORRECT')
 		else:
