@@ -2,21 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6a0dcab5-d066-47fc-bdc0-5f9cad20809b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/error_correction/data/hamming_15_11.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_correcting/data/hamming_7_4.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_correcting/data/repetition_code_l3.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_correcting/model.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_correcting/nn.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_recognition/models/model.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/error_recognition/models/model.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_recognition/models/my_model.h5" beforeDir="false" afterPath="$PROJECT_DIR$/error_recognition/models/my_model.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_recognition/models/saved/hamming_7_4.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/error_recognition/nn.py" beforeDir="false" afterPath="$PROJECT_DIR$/error_recognition/nn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/support_stuff/correction/csv_generator_correction.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/error_correction/data/hamming_7_4_7out.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/error_correction/models/model.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/error_correction/models/model.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/error_correction/models/my_model.h5" beforeDir="false" afterPath="$PROJECT_DIR$/error_correction/models/my_model.h5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/error_correction/nn.py" beforeDir="false" afterPath="$PROJECT_DIR$/error_correction/nn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/support_stuff/correction/csv_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/support_stuff/correction/csv_table.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/support_stuff/recognition/csv_gen_recognition.m" beforeDir="false" afterPath="$PROJECT_DIR$/support_stuff/recognition/csv_gen_recognition.m" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/support_stuff/recognition/csv_table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/support_stuff/recognition/csv_table.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/support_stuff/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/support_stuff/correction/normalized_hamming.m" beforeDir="false" afterPath="$PROJECT_DIR$/support_stuff/correction/normalized_hamming.m" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,22 +20,22 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_7_4_4out.csv">
+        <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_15_11.csv">
+          <provider selected="true" editor-type-id="csv-text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="52" selection-start-line="9" selection-start-column="52" selection-end-line="9" selection-end-column="52" />
+            </state>
+          </provider>
           <provider editor-type-id="csv-table-editor">
             <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-          </provider>
-          <provider selected="true" editor-type-id="csv-text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="22" lean-forward="true" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
-            </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/error_correction/nn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="77" column="94" lean-forward="true" selection-start-line="77" selection-start-column="94" selection-end-line="77" selection-end-column="94" />
+            <state relative-caret-position="187">
+              <caret line="59" column="33" lean-forward="true" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -155,6 +148,12 @@
               <item name="error_correction" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="disser" type="b2602c69:ProjectViewProjectNode" />
+              <item name="disser" type="462c0819:PsiDirectoryNode" />
+              <item name="error_correction" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -222,7 +221,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/error_correction/nn.py" />
-      <option name="PARAMETERS" value="&quot;data\hamming_7_4_4out.csv&quot;" />
+      <option name="PARAMETERS" value="&quot;data\hamming_15_11.csv&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -304,13 +303,13 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14330874" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14330874" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.329718" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.6954689" visible="true" weight="0.4496208" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.68756586" weight="0.30877572" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.6954689" visible="true" weight="0.36078006" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.68756586" weight="0.2708559" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32936078" />
@@ -433,46 +432,46 @@
     <entry file="file://$PROJECT_DIR$/error_recognition/data/parity_check_4bit.csv" />
     <entry file="file://$PROJECT_DIR$/error_recognition/draw_plots.py" />
     <entry file="file://$PROJECT_DIR$/error_recognition/data/parity_check_10bit.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="16983">
           <caret line="999" column="18" lean-forward="true" selection-start-line="999" selection-start-column="18" selection-end-line="999" selection-end-column="18" />
         </state>
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/tensorflow/_api/v1/keras/optimizers/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/error_recognition/data/repetition_code_l3.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="8" lean-forward="true" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/error_recognition/data/parity_check_3bit.csv">
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_recognition/data/parity_check_3bit.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="272">
           <caret line="16" column="8" lean-forward="true" selection-start-line="16" selection-start-column="8" selection-end-line="16" selection-end-column="8" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/error_recognition/data/parity_check_7bit.csv">
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_recognition/data/parity_check_7bit.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="17">
           <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
         </state>
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/tensorflow/python/keras/engine/training.py">
@@ -490,53 +489,47 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_recognition/data/hamming_15_11.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="493">
           <caret line="29" column="32" lean-forward="true" selection-start-line="29" selection-start-column="32" selection-end-line="29" selection-end-column="32" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/error_recognition/data/repetition_code_l2.csv">
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_recognition/data/repetition_code_l2.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/error_recognition/data/hamming_7_4.csv">
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_recognition/data/hamming_7_4.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state>
           <caret column="12" selection-end-column="12" />
         </state>
       </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_correcting/data/repetition_code_l3.csv" />
     <entry file="file://$PROJECT_DIR$/error_correcting/nn.py" />
     <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_7_4.csv" />
-    <entry file="file://$PROJECT_DIR$/support_stuff/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/support_stuff/test.py" />
     <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_7_4_to_16.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="289">
           <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
         </state>
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_recognition/nn.py">
@@ -547,11 +540,11 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_7_4_7out.csv">
-      <provider editor-type-id="csv-table-editor">
-        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
-      </provider>
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="-1800" />
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/keras/engine/training.py">
@@ -600,19 +593,35 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_7_4_4out.csv">
+      <provider selected="true" editor-type-id="csv-text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+        </state>
+      </provider>
       <provider editor-type-id="csv-table-editor">
         <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_15_11(reducedchk).csv">
+      <provider selected="true" editor-type-id="csv-text-editor" />
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/error_correction/data/hamming_15_11.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="22" lean-forward="true" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+        <state relative-caret-position="153">
+          <caret line="9" column="52" selection-start-line="9" selection-start-column="52" selection-end-line="9" selection-end-column="52" />
         </state>
+      </provider>
+      <provider editor-type-id="csv-table-editor">
+        <state showInfoPanel="true" fixedHeaders="false" rowLines="3" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/error_correction/nn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="77" column="94" lean-forward="true" selection-start-line="77" selection-start-column="94" selection-end-line="77" selection-end-column="94" />
+        <state relative-caret-position="187">
+          <caret line="59" column="33" lean-forward="true" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
         </state>
       </provider>
     </entry>

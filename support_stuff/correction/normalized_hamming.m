@@ -8,8 +8,8 @@ fid = fopen('csv_table.csv','w');
 fprintf(fid,'%s\n',textHeader);
 
 % Parameters of code
-code_params = [7 4]; % Hamming code (7,4)
-%code_params = [15 11]; % Hamming code (15,11)
+% code_params = [7 4]; % Hamming code (7,4)
+code_params = [15 11]; % Hamming code (15,11)
 
 n = code_params(1);
 k = code_params(2);

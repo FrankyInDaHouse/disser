@@ -16,6 +16,10 @@ else:
     import time
     import math
 
+
+def ber(y_true, y_pred):
+    return np.mean(np.not_equal(y_true, np.round(y_pred)))
+
 data_type_dic = {
 	'received_seq': 'str',
 	'corr_result': 'str'
@@ -48,9 +52,13 @@ DETAILED_REPORT_ENABLED = 1
 PREDICTION_ENABLED = 1
 EARLY_STOPPER_ENABLED = 1
 ################################
+train_SNR_Eb = 5  # training Eb/No
+train_SNR_Es = train_SNR_Eb + 10*np.log10(correct_results_len_without_spaces/received_seq_len_without_spaces)
+train_sigma = np.sqrt(1/(2*10**(train_SNR_Es/10)))
+################################
 AMOUNT_OF_HIDDEN_LAYERS = 2
-AMOUNT_OF_TRAINING_EPOCHS = 50000
-PART_OF_FULL_DATA_USED_TO_VAL = 0.875  # <- will be used as validation. (1-x) used for training
+AMOUNT_OF_TRAINING_EPOCHS = 10000
+PART_OF_FULL_DATA_USED_TO_VAL = 0.8978  # <- will be used as validation. (1-x) used for training
 RETRIES_MAX_VALUE = 1
 # CONFIGURATION PART
 if AMOUNT_OF_HIDDEN_LAYERS > 2:
@@ -75,7 +83,7 @@ for i in range(RETRIES_MAX_VALUE):
 	################################################################
 	model = keras.Sequential()
 
-	model.add(keras.layers.GaussianNoise(0.5, input_shape=(received_seq_len_without_spaces,)))
+	model.add(keras.layers.GaussianNoise(train_sigma, input_shape=(received_seq_len_without_spaces,)))
 
 	# As recommended in [16], each hidden layer employs a
 	# ReLU activation function because it is nonlinear and at the
@@ -108,7 +116,7 @@ for i in range(RETRIES_MAX_VALUE):
 
 	early_stopper = keras.callbacks.EarlyStopping(
 		monitor='val_acc',
-		patience=AMOUNT_OF_TRAINING_EPOCHS,
+		patience=AMOUNT_OF_TRAINING_EPOCHS / 5,
 		verbose=DETAILED_REPORT_ENABLED,
 		mode='auto',
 		restore_best_weights=True)
@@ -203,6 +211,7 @@ if PREDICTION_ENABLED:
 	print('[VALIDATION] Correct ', val_stat_correct, 'from', validation_size, '(', val_stat_correct/validation_size*100, ') percents')
 	print('[TOTAL] Correct ', train_stat_correct + val_stat_correct, 'from', amount_of_received_seq, '(', (train_stat_correct + val_stat_correct) / amount_of_received_seq * 100, ') percents')
 
+print('[TOTAL BER statistics] :', ber(correct_results, model.predict(received_seq)))
 # PLOTS
 if PLOTS_ENABLED:
 	history_dict = history.history
