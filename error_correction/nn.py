@@ -50,15 +50,18 @@ PER_LAYER_WEIGHTS = 0
 PLOTS_ENABLED = 1
 DETAILED_REPORT_ENABLED = 1
 PREDICTION_ENABLED = 1
-EARLY_STOPPER_ENABLED = 1
+PREDICTION_LIST = 0
+EARLY_STOPPER_ENABLED = 0
+USE_TRUNCATED_VALIDATION = 0  # option to save training time (useful for codes where 2^n >> 2^k)
 ################################
-train_SNR_Eb = 5  # training Eb/No
+train_SNR_Eb = 4  # training Eb/No
 train_SNR_Es = train_SNR_Eb + 10*np.log10(correct_results_len_without_spaces/received_seq_len_without_spaces)
 train_sigma = np.sqrt(1/(2*10**(train_SNR_Es/10)))
+print('Train sigma = ', train_sigma)
 ################################
 AMOUNT_OF_HIDDEN_LAYERS = 2
-AMOUNT_OF_TRAINING_EPOCHS = 10000
-PART_OF_FULL_DATA_USED_TO_VAL = 0.8978  # <- will be used as validation. (1-x) used for training
+AMOUNT_OF_TRAINING_EPOCHS = 100
+PART_OF_FULL_DATA_USED_TO_VAL = 0.9375  # <- will be used as validation. (1-x) used for training
 RETRIES_MAX_VALUE = 1
 # CONFIGURATION PART
 if AMOUNT_OF_HIDDEN_LAYERS > 2:
@@ -72,8 +75,16 @@ validation_size = amount_of_received_seq - training_size
 x_train = received_seq[:training_size]
 y_train = correct_results[:training_size]
 
-x_validation = received_seq[training_size:]
-y_validation = correct_results[training_size:]
+if USE_TRUNCATED_VALIDATION:
+	print('==========\nTRUNCATED_VALIDATION ENABLED!!! BE CAREFUL!!!\n==========')
+	PATIENCE = AMOUNT_OF_TRAINING_EPOCHS  # because patience related to validation accuracy where x/y_validation is fake
+	PLOTS_ENABLED = 0  # because plots shows training history, where x/y_validation is fake
+	x_validation = received_seq[training_size:training_size+1]
+	y_validation = correct_results[training_size:training_size+1]
+else:
+	PATIENCE = AMOUNT_OF_TRAINING_EPOCHS  # / 5
+	x_validation = received_seq[training_size:]
+	y_validation = correct_results[training_size:]
 
 iteration = 0
 resulting_table = np.zeros((RETRIES_MAX_VALUE + 3, 5))
@@ -116,7 +127,7 @@ for i in range(RETRIES_MAX_VALUE):
 
 	early_stopper = keras.callbacks.EarlyStopping(
 		monitor='val_acc',
-		patience=AMOUNT_OF_TRAINING_EPOCHS / 5,
+		patience=PATIENCE,
 		verbose=DETAILED_REPORT_ENABLED,
 		mode='auto',
 		restore_best_weights=True)
@@ -153,12 +164,18 @@ for i in range(RETRIES_MAX_VALUE):
 	)
 	resulting_table[i, 3] = total_acc * 100
 	print('Total results: \n   loss = ', total_loss, '\n   accuracy = ', total_acc, '\niteration = ', iteration, '\n')
-	if (train_acc >= 0.90) and (val_acc >= 0.90) and EARLY_STOPPER_ENABLED:
+	if (train_acc >= 0.95) and (val_acc >= 0.95) and EARLY_STOPPER_ENABLED:
 		break
+
 #
 #
 #
 #
+
+# return back true size of validation set
+if USE_TRUNCATED_VALIDATION:
+	x_validation = received_seq[training_size:]
+	y_validation = correct_results[training_size:]
 
 # table finishing
 print('Per iteration table\n № iter  |   Test_acc   | Valid_acc | Total_acc | Profiling')
@@ -196,22 +213,25 @@ if PREDICTION_ENABLED:
 	for i in range(training_size):
 		if np.array_equal(predicts[i], y_train[i]):
 			train_stat_correct = train_stat_correct + 1
-			print('For training example ', i, ' we have ', predicts[i], '. Correct is ', y_train[i], '. |CORRECT')
+			if PREDICTION_LIST:
+				print('For training example ', i, ' we have ', predicts[i], '. Correct is ', y_train[i], '. |CORRECT')
 		else:
-			print('For training example ', i, ' we have ', predicts[i], '. Correct is ', y_train[i], '. |BULLSHIT')
+			if PREDICTION_LIST:
+				print('For training example ', i, ' we have ', predicts[i], '. Correct is ', y_train[i], '. |BULLSHIT')
 	print('[TRAINING] Correct ', train_stat_correct, 'from', training_size, '(', train_stat_correct/training_size*100, ') percents')
-	print('\n=====\n')
 	predicts = np.round(model.predict(x_validation))
 	for i in range(validation_size):
 		if np.array_equal(predicts[i], y_validation[i]):
 			val_stat_correct = val_stat_correct + 1
-			print('For validation example ', i, ' we have ', predicts[i], '. Correct is ', y_validation[i], '. |CORRECT')
+			if PREDICTION_LIST:
+				print('For validation example ', i, ' we have ', predicts[i], '. Correct is ', y_validation[i], '. |CORRECT')
 		else:
-			print('For validation example ', i, ' we have ', predicts[i], '. Correct is ', y_validation[i], '. |BULLSHIT')
+			if PREDICTION_LIST:
+				print('For validation example ', i, ' we have ', predicts[i], '. Correct is ', y_validation[i], '. |BULLSHIT')
 	print('[VALIDATION] Correct ', val_stat_correct, 'from', validation_size, '(', val_stat_correct/validation_size*100, ') percents')
 	print('[TOTAL] Correct ', train_stat_correct + val_stat_correct, 'from', amount_of_received_seq, '(', (train_stat_correct + val_stat_correct) / amount_of_received_seq * 100, ') percents')
 
-print('[TOTAL BER statistics] :', ber(correct_results, model.predict(received_seq)))
+print('[TOTAL BER statistics] : ', ber(correct_results, model.predict(received_seq)), 'through', len(correct_results), 'samples')
 # PLOTS
 if PLOTS_ENABLED:
 	history_dict = history.history
